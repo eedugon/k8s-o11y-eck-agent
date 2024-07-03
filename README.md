@@ -111,20 +111,12 @@ Verify all is running properly.
 
 You will see that the DaemonSet agents are providing system monitoring information but nothing about Kubernetes. That's because the created policy didn't include Kubernetes integration. We will add it manually in the next step.
 
-## Add Kubernetes Integration to the agents policy
+## Add Kubernetes Integration to the DaemonSet agents policy
 
-This is a manual step to demon
+Open the Fleet Policy used by the DaemonSet agents and add `Kubernetes integration` with the following inputs configuration:
 
-Ensure you add the following Data Streams into the policy:
-- Kubelet API related metrics
-- Kube-state-metrics related metrics (Leader Election enabled)
-
-Ensure to use the right host for all the state metricsets:
-
-```
-kube-state-metrics.kube-system.svc.cluster.local:8080
-```
-
+- All Kubelet API related metrics
+- All `kube-state-metrics` related metrics (Leader Election enabled). Ensure to use the right host for all the state metricsets: `kube-state-metrics.kube-system.svc.cluster.local:8080`
 - Kubernetes Events (Leader Election enabled)
 - Apiserver metrics (Leader Election enabled)
 - Container logs
@@ -138,7 +130,7 @@ After applying the changes all the data should be flowing. Interesting views:
 
 __Note__: If the cluster level metrics (with leader election) are not flowing, you might need to delete the lease so it's recreated:
 
-```
+```bash
 kubectl delete lease elastic-agent-cluster-leader
 ```
 
@@ -197,8 +189,6 @@ curl localhost:5000
 - Deploy 2 extra clusters that will be sending monitoring data to the previously created clusters.
 
 - Create a central monitoring cluster and ship logs and metrics from all clusters to this new one instead.
-
-
 
 # Troubleshooting notes
 
