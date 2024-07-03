@@ -1,0 +1,44 @@
+# Deployment de la imagen eedugon/apm-test:latest
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-counter-1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flask-counter-1
+  template:
+    metadata:
+      labels:
+        app: flask-counter-1
+    spec:
+      # nodeSelector:
+      #   disktype: ssd
+      containers:
+      - image: eedugon/apm-test:latest
+        name: flask-counter-mysql
+        env:
+          # Define the environment variable
+          - name: MYSQL_DB
+            value: "contador-db"
+          - name: MYSQL_USER
+            value: "flaskuser"
+          - name: MYSQL_PASSWORD
+            value: "patodegoma"
+          - name: MYSQL_HOST
+            value: "mysql-svc"
+          - name: ELASTIC_APM_ENABLED
+            value: "True"
+          # - name: ELASTIC_APM_DEBUG
+          #   value: "True"
+          - name: ELASTIC_APM_SERVICE_NAME
+            value: "flask-counter-1"
+          - name: ELASTIC_APM_SERVER_URL
+            value: "https://apm-server-quickstart-apm-http.default.svc.cluster.local:8200"
+          - name: ELASTIC_APM_SECRET_TOKEN
+            value: "c3cSeX3FX5dB4l680z984PmN"
+          - name: ELASTIC_APM_VERIFY_SERVER_CERT
+            value: "False"
+          # - name: FLASK_DEBUG
+          #   value: "False"

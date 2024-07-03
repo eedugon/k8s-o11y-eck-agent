@@ -1,0 +1,101 @@
+apiVersion: agent.k8s.elastic.co/v1alpha1
+kind: Agent
+metadata:
+  name: elastic-agent-quickstart
+  namespace: default
+spec:
+  version: 8.14.1
+  kibanaRef:
+    name: kibana-quickstart
+  fleetServerRef:
+    name: fleet-server-quickstart
+  mode: fleet
+  policyID: eck-agent
+  daemonSet:
+    podTemplate:
+      spec:
+        serviceAccountName: elastic-agent
+        hostNetwork: true
+        dnsPolicy: ClusterFirstWithHostNet
+        automountServiceAccountToken: true
+        securityContext:
+          runAsUser: 0
+        containers:
+          - name: agent
+            volumeMounts:
+              - name: proc
+                mountPath: /hostfs/proc
+                readOnly: true
+              - name: cgroup
+                mountPath: /hostfs/sys/fs/cgroup
+                readOnly: true
+              - name: varlibdockercontainers
+                mountPath: /var/lib/docker/containers
+                readOnly: true
+              - name: varlog
+                mountPath: /var/log
+                readOnly: true
+              - name: etc-full
+                mountPath: /hostfs/etc
+                readOnly: true
+              - name: var-lib
+                mountPath: /hostfs/var/lib
+                readOnly: true
+              - name: etc-mid
+                mountPath: /etc/machine-id
+                readOnly: true
+              - name: sys-kernel-debug
+                mountPath: /sys/kernel/debug
+              # eedugon: ECK will handle this one
+              # - name: elastic-agent-state
+              #   mountPath: /usr/share/elastic-agent/state
+              # If you are using the Universal Profiling integration, please uncomment these lines before applying.
+              #- name: universal-profiling-cache
+              #  mountPath: /var/cache/Elastic
+        volumes:
+          - name: proc
+            hostPath:
+              path: /proc
+          - name: cgroup
+            hostPath:
+              path: /sys/fs/cgroup
+          - name: varlibdockercontainers
+            hostPath:
+              path: /var/lib/docker/containers
+          - name: varlog
+            hostPath:
+              path: /var/log
+          # The following volumes are needed for Cloud Security Posture integration (cloudbeat)
+          # If you are not using this integration, then these volumes and the corresponding
+          # mounts can be removed.
+          - name: etc-full
+            hostPath:
+              path: /etc
+          - name: var-lib
+            hostPath:
+              path: /var/lib
+          # Mount /etc/machine-id from the host to determine host ID
+          # Needed for Elastic Security integration
+          - name: etc-mid
+            hostPath:
+              path: /etc/machine-id
+              type: File
+          # Needed for 'Defend for containers' integration (cloud-defend) and Universal Profiling
+          # If you are not using one of these integrations, then these volumes and the corresponding
+          # mounts can be removed.
+          - name: sys-kernel-debug
+            hostPath:
+              path: /sys/kernel/debug
+          # Mount /var/lib/elastic-agent-managed/kube-system/state to store elastic-agent state
+          # Update 'kube-system' with the namespace of your agent installation
+          # EEDUGON: ECK will handle this one
+          # - name: elastic-agent-state
+          #   hostPath:
+          #     path: /var/lib/elastic-agent-managed/kube-system/state
+          #     type: DirectoryOrCreate
+          # Mount required for Universal Profiling.
+          # If you are using the Universal Profiling integration, please uncomment these lines before applying.
+          #- name: universal-profiling-cache
+          #  hostPath:
+          #    path: /var/cache/Elastic
+          #    type: DirectoryOrCreate

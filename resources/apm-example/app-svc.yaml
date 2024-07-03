@@ -1,0 +1,13 @@
+# Servicio para exponer la app
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-counter-svc
+spec:
+  type: ClusterIP
+  selector:
+    app: flask-counter-1
+  ports:
+  - protocol: TCP
+    port: 5000
+    targetPort: 5000

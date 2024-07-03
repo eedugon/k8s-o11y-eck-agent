@@ -1,0 +1,24 @@
+apiVersion: agent.k8s.elastic.co/v1alpha1
+kind: Agent
+metadata:
+  name: fleet-server-quickstart
+  namespace: default
+spec:
+  version: 8.14.1
+  kibanaRef:
+    name: kibana-quickstart
+  elasticsearchRefs:
+  - name: elasticsearch-quickstart
+  mode: fleet
+  fleetServerEnabled: true
+  policyID: eck-fleet-server
+  deployment:
+    replicas: 1
+    podTemplate:
+      spec:
+        serviceAccountName: elastic-agent
+        # we disable the service token to ensure the fleet server doesn't enable the Kubernetes provider
+        # otherwise this agent might compete for the leadership lease with other agents
+        automountServiceAccountToken: false
+        securityContext:
+          runAsUser: 0 

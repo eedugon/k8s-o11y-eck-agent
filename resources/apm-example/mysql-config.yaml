@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: init-configmap
+data:
+  db.sql: |-
+    CREATE TABLE tabla_contador (
+      contador int NOT NULL
+    );
+
+    INSERT INTO tabla_contador VALUES (0);
