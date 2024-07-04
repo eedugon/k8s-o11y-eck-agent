@@ -239,7 +239,7 @@ Check that all expected metricsets are being provided, for example `state_*`:
 ```
 
 
-## Redeploying Elastic Agent or Changing polcicies
+## Redeploying Elastic Agent or Changing policies
 
 There's an [issue](https://github.com/elastic/elastic-agent/issues/3586) where Elastic Agent might fail to update the token information on the state directory (mounted as a hostPath volume).
 
