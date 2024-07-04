@@ -2,7 +2,7 @@
 
 ## Introduction
 
-The purpose of this demonstration is to show ECK capabilities and how easy we can orchestrate Elasticsearch clusters and implement a Kubernetes Observability use case.
+The following content shows ECK capabilities and how easy we can implement a Kubernetes Observability use case with the help of the Elastic Stack. The manifests are not intended to be used in production.
 
 Components:
 
@@ -16,7 +16,7 @@ Components:
 - APM Server (for APM demo)
 - Example application (for APP demo)
 
-There's an interesing guide added which doesn't use ECK: https://www.elastic.co/guide/en/starting-with-the-elasticsearch-platform-and-its-solutions/current/getting-started-kubernetes.html
+There's also an interesing guide here which doesn't use ECK: https://www.elastic.co/guide/en/starting-with-the-elasticsearch-platform-and-its-solutions/current/getting-started-kubernetes.html
 
 ## ECK Installation
 
@@ -73,7 +73,7 @@ Review all objects created by ECK:
 
 ECK creates and maintains a lot of secrets:
 
-- Elastic user password
+- `elastic` user password
 - CA certificate for HTTPS endpoints (separate secrets for Elasticsearch and Kibana)
 - Configuration files
 - Passwords for certain users
@@ -188,7 +188,20 @@ curl localhost:5000
 
 - Deploy 2 extra clusters that will be sending monitoring data to the previously created clusters.
 
+```bash
+kubectl apply -f 20_es_prod_tiers_example.yaml
+kubectl apply -f 21_es_dev_qa_example.yaml
+```
+
 - Create a central monitoring cluster and ship logs and metrics from all clusters to this new one instead.
+
+```bash
+kubectl apply -f 30_stack_monitoring_dedicated_cluster.yaml
+
+# Then apply changes in the other manifest to send monitoring data to this new cluster instead
+```
+
+
 
 # Uninstalling everything:
 
