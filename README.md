@@ -190,6 +190,23 @@ curl localhost:5000
 
 - Create a central monitoring cluster and ship logs and metrics from all clusters to this new one instead.
 
+# Uninstalling everything:
+
+In order to delete all generated resources:
+
+```bash
+kubectl delete -f resources/
+kubectl delete -f resources/apm-example
+kubectl delete -f resources/kube-state-metrics-v2.12.0
+```
+
+If we also want to uninstall ECK:
+
+```bash
+kubectl delete -f https://download.elastic.co/downloads/eck/2.13.0/operator.yaml
+kubectl delete -f https://download.elastic.co/downloads/eck/2.13.0/crds.yaml
+```
+
 # Troubleshooting notes
 
 - Elastic agent possible issues:
@@ -209,10 +226,9 @@ Check that all expected metricsets are being provided, for example `state_*`:
 ```
 
 
-REDEPLOYING EVERYTHING:
+## Redeploying Elastic Agent or Changing polcicies
 
-Be careful with the enrollment token and the data directory, there's a limitation on Elastic Agent side and the state directory needs to be cleaned some times.
-
+There's an [issue](https://github.com/elastic/elastic-agent/issues/3586) where Elastic Agent might fail to update the token information on the state directory (mounted as a hostPath volume).
 
 # Suggested Improvements
 
